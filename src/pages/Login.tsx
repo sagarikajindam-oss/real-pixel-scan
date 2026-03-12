@@ -2,24 +2,28 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
-import { Shield, Eye, EyeOff } from "lucide-react";
+import { Shield, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (login(email, password)) {
+    setSubmitting(true);
+    const { error } = await login(email, password);
+    setSubmitting(false);
+    if (!error) {
       toast({ title: "Login successful", description: "Welcome back!" });
       navigate("/detect");
     } else {
-      toast({ title: "Login failed", description: "Invalid email or password. Please register first.", variant: "destructive" });
+      toast({ title: "Login failed", description: error, variant: "destructive" });
     }
   };
 
@@ -73,9 +77,10 @@ const Login = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-display font-semibold text-sm tracking-wider glow-box"
+            disabled={submitting}
+            className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-display font-semibold text-sm tracking-wider glow-box flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            Login
+            {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Logging in...</> : "Login"}
           </motion.button>
           <p className="text-center text-sm text-muted-foreground">
             Don't have an account?{" "}
