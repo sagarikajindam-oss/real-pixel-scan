@@ -41,35 +41,14 @@ const Index = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {isAuthenticated ? (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate("/detect")}
-                className="px-8 py-4 rounded-lg bg-primary text-primary-foreground font-display font-semibold text-sm tracking-wider glow-box flex items-center gap-2 justify-center"
-              >
-                Start Detection <ArrowRight className="w-4 h-4" />
-              </motion.button>
-            ) : (
-              <>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate("/login")}
-                  className="px-8 py-4 rounded-lg bg-primary text-primary-foreground font-display font-semibold text-sm tracking-wider glow-box flex items-center gap-2 justify-center"
-                >
-                  Login <ArrowRight className="w-4 h-4" />
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate("/register")}
-                  className="px-8 py-4 rounded-lg border border-primary/40 text-primary font-display font-semibold text-sm tracking-wider hover:bg-primary/10 transition-colors flex items-center gap-2 justify-center"
-                >
-                  Register
-                </motion.button>
-              </>
-            )}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate(isAuthenticated ? "/detect" : "/login")}
+              className="px-8 py-4 rounded-lg bg-primary text-primary-foreground font-display font-semibold text-sm tracking-wider glow-box flex items-center gap-2 justify-center"
+            >
+              Get Started <ArrowRight className="w-4 h-4" />
+            </motion.button>
           </div>
         </motion.div>
       </section>
