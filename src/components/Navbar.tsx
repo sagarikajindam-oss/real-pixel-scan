@@ -6,10 +6,12 @@ const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate("/");
   };
+
+  const displayName = user?.user_metadata?.full_name || user?.email || "";
 
   return (
     <nav className="relative z-20 flex items-center justify-between px-6 py-4 border-b border-border bg-background/80 backdrop-blur-md">
@@ -27,8 +29,8 @@ const Navbar = () => {
             >
               Detection
             </Link>
-            <span className="text-sm text-muted-foreground">
-              {user?.name}
+            <span className="text-sm text-muted-foreground truncate max-w-[120px]">
+              {displayName}
             </span>
             <button
               onClick={handleLogout}

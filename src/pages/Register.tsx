@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
-import { Shield, Eye, EyeOff } from "lucide-react";
+import { Shield, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Register = () => {
@@ -10,17 +10,21 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (register(name, email, password)) {
+    setSubmitting(true);
+    const { error } = await register(name, email, password);
+    setSubmitting(false);
+    if (!error) {
       toast({ title: "Registration successful", description: "Welcome aboard!" });
       navigate("/detect");
     } else {
-      toast({ title: "Registration failed", description: "Email already exists.", variant: "destructive" });
+      toast({ title: "Registration failed", description: error, variant: "destructive" });
     }
   };
 
@@ -75,6 +79,7 @@ const Register = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm pr-12"
                 placeholder="••••••••"
+                minLength={6}
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -85,9 +90,10 @@ const Register = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-display font-semibold text-sm tracking-wider glow-box"
+            disabled={submitting}
+            className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-display font-semibold text-sm tracking-wider glow-box flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            Register
+            {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating account...</> : "Register"}
           </motion.button>
           <p className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
